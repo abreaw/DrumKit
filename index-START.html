@@ -8,6 +8,7 @@
 <body>
 
 
+  <!-- key #'s can be found on key.info site each key typed has a corresponding # associated w/ it -->
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -58,6 +59,47 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  // waiting for a keydown event to happen on the window
+  window.addEventListener('keydown', playSound);
+
+  // function defined for removing the transition styling on the different keys
+  function removeTransition(e) {
+    // console.log(e); // many different events occur when the transition end event occurs
+
+    // check the longest event 
+    if (e.propertyName !== 'transform') return;  // skip if a different event occurs
+
+    // console.log(e.propertyName);
+    this.classList.remove('playing'); // remove the styling from the key pressed
+
+  }
+
+  // function defined for playing a Sound when a defined audio key is pressed
+  function playSound(e) {
+    // console.log(e.keyCode);
+    // find the corresponding audio element that the keyCode pressed is equal to
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    // console.log(audio);
+
+    // find the corresponding key element that the keyCode pressed is equal to so a class can be added to change the styles
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    // console.log(key);
+
+    // stop function if no audio element found
+    if (!audio) return;
+    
+    // if there is one then play the sound
+    audio.currentTime = 0; // rewind the sound to start over again if the same key pressed multiple times
+    audio.play();
+
+    // change the styling and add the playing class to show the key has been pressed
+    key.classList.add('playing'); // adds the playing class to the key
+  }
+
+  // get an array of all the .key class items on the page
+  const keys = document.querySelectorAll('.key');
+  // allow all the keys on the page to have an eventListener for when the CSS transition completes / ends the removeTransition function will be called
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
 
 </script>
 
